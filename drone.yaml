@@ -1,0 +1,102 @@
+# ------------------- Create Pod ------------------- #
+
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: drone-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: drone
+  template:
+    metadata:
+      labels:
+        app: drone
+    spec:
+      containers:
+      - name: drone
+        image: drone/drone:1.0.0
+        env:
+        - name: DRONE_KUBERNETES_ENABLED
+          value: "true"
+        - name: DRONE_KUBERNETES_NAMESPACE
+          value: "default"
+        - name: DRONE_GITHUB_SERVER
+          value: "https://github.com"
+        - name: DRONE_GITHUB_CLIENT_ID
+          value: "cilintid"
+        - name: DRONE_GITHUB_CLIENT_SECRET
+          value: "secret"
+        - name: DRONE_RPC_SECRET
+          value: "secret"
+        - name: DRONE_SERVER_HOST
+          value: "drone.k8s.theykk.net"
+        - name: DRONE_SERVER_PROTO
+          value: "https"
+        ports:
+        - containerPort: 80
+        - containerPort: 443
+
+---
+# ------------------- Create Service ------------------- #
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: drone-service
+  namespace: default
+spec:
+  ports:
+  - name: http
+    targetPort: 80
+    port: 80
+  selector:
+    app: drone
+
+---
+# ------------------- Create Ingress ------------------- #
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: drone-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    certmanager.k8s.io/cluster-issuer: letsencrypt-staging
+spec:
+  tls:
+  - hosts:
+    - drone.k8s.theykk.net
+    secretName: drone-service-crt
+  rules:
+  - host: drone.k8s.theykk.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: drone-service
+          servicePort: http
+
+---
+# ------------------- Create Certificate ------------------- #
+
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: drone-service-crt
+spec:
+  secretName: drone-service-crt
+  dnsNames:
+  - drone.k8s.theykk.net
+  acme:
+    config:
+    - http01:
+        ingressClass: traefik
+      domains:
+      - drone.k8s.theykk.net
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer

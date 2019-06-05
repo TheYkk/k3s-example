@@ -1,5 +1,7 @@
 # k3s-example
 
+## Setup k3s
+[k3s](https://k3s.io/)
 ## Install Cert manager
 
 [Cert Manager](https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html)
@@ -13,6 +15,32 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.8
 
 ```
 
+## Setup letsencrypt Issuer
+```bash
+kubectl apply -f clus.yaml
+```
+## Setup Traefik
+```bash
+kubectl apply -f traefik.yaml
+```
+## Setup Example app
+```bash
+kubectl apply -f kubia.yaml
+```
+## Setup Example node app
+```bash
+kubectl apply -f node-example.yaml
+```
+## Setup Kubernetes dashboard
+```bash
+kubectl apply -f dash.yaml
+```
+## Setup DroneCi 
+[Dodc](https://docs.drone.io/installation/github/kubernetes/)
+
+```bash
+kubectl apply -f drone.yaml
+```
 ## Create token for dashboard
 ```bash
 kubectl create clusterrolebinding kubernetes-dashboard --clusterrole=cluster-admin --serviceaccount=kube-system:kubernetes-dashboard
