@@ -35,8 +35,7 @@ kubectl apply -f node-example.yaml
 ```bash
 kubectl apply -f dash.yaml
 ```
-## Setup DroneCi 
-[Dodc](https://docs.drone.io/installation/github/kubernetes/)
+## Setup DroneCi [Docs](https://docs.drone.io/installation/github/kubernetes/)
 
 ```bash
 kubectl apply -f drone.yaml
