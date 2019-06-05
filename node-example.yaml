@@ -1,0 +1,71 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: node-example-deployment
+  namespace: default
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: node-example
+  template:
+    metadata:
+      labels:
+        app: node-example
+    spec:
+      containers:
+      - name: node-example-container
+        image: theykk/node-example-docker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: node-example-service
+  namespace: default
+spec:
+  ports:
+  - name: http
+    targetPort: 8080
+    port: 80
+  selector:
+    app: node-example
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: node-example-ingress
+  namespace: default
+  annotations:
+    kubernetes.io/ingress.class: traefik
+    certmanager.k8s.io/cluster-issuer: letsencrypt-staging
+spec:
+  tls:
+  - hosts:
+    - node-example.k8s.theykk.net
+    secretName: node-example-service-crt      
+  rules:
+  - host: node-example.k8s.theykk.net
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: node-example-service
+          servicePort: http
+---          
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: node-example-service-crt
+spec:
+  secretName: node-example-service-crt
+  dnsNames:
+  - node-example.k8s.theykk.net
+  acme:
+    config:
+    - http01:
+        ingressClass: traefik
+      domains:
+      - node-example.k8s.theykk.net
+  issuerRef:
+    name: letsencrypt-staging
+    kind: ClusterIssuer
