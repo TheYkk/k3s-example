@@ -32,7 +32,7 @@ spec:
         - name: DRONE_RPC_SECRET
           value: "secret"
         - name: DRONE_SERVER_HOST
-          value: "drone.k8s.theykk.net"
+          value: "drone.{{HOST}}"
         - name: DRONE_SERVER_PROTO
           value: "https"
         ports:
@@ -69,10 +69,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - drone.k8s.theykk.net
+    - drone.{{HOST}}
     secretName: drone-service-crt
   rules:
-  - host: drone.k8s.theykk.net
+  - host: drone.{{HOST}}
     http:
       paths:
       - path: /
@@ -90,13 +90,13 @@ metadata:
 spec:
   secretName: drone-service-crt
   dnsNames:
-  - drone.k8s.theykk.net
+  - drone.{{HOST}}
   acme:
     config:
     - http01:
         ingressClass: traefik
       domains:
-      - drone.k8s.theykk.net
+      - drone.{{HOST}}
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer

@@ -176,10 +176,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - kubernetes.k8s.theykk.net
+    - kubernetes.{{HOST}}
     secretName: kubernetes-dashboard-service-cert      
   rules:
-  - host: kubernetes.k8s.theykk.net
+  - host: kubernetes.{{HOST}}
     http:
       paths:
       - path: /
@@ -197,13 +197,13 @@ metadata:
 spec:
   secretName: kubernetes-dashboard-service-cert
   dnsNames:
-  - kubernetes.k8s.theykk.net
+  - kubernetes.{{HOST}}
   acme:
     config:
     - http01:
         ingressClass: traefik
       domains:
-      - kubernetes.k8s.theykk.net
+      - kubernetes.{{HOST}}
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer

@@ -1,39 +1,39 @@
 apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
-  name: whoareyou-deployment
+  name: node-example-deployment
   namespace: default
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: whoareyou
+      app: node-example
   template:
     metadata:
       labels:
-        app: whoareyou
+        app: node-example
     spec:
       containers:
-      - name: whoareyou-container
-        image: containous/whoami
+      - name: node-example-container
+        image: theykk/node-example-docker
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: whoareyou-service
+  name: node-example-service
   namespace: default
 spec:
   ports:
   - name: http
-    targetPort: 80
+    targetPort: 8080
     port: 80
   selector:
-    app: whoareyou
+    app: node-example
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: whoareyou-ingress
+  name: node-example-ingress
   namespace: default
   annotations:
     kubernetes.io/ingress.class: traefik
@@ -41,31 +41,31 @@ metadata:
 spec:
   tls:
   - hosts:
-    - whoareyou.k8s.theykk.net
-    secretName: whoareyou-service-crt      
+    - node-example.{{HOST}}
+    secretName: node-example-service-crt      
   rules:
-  - host: whoareyou.k8s.theykk.net
+  - host: node-example.{{HOST}}
     http:
       paths:
       - path: /
         backend:
-          serviceName: whoareyou-service
+          serviceName: node-example-service
           servicePort: http
 ---          
 apiVersion: certmanager.k8s.io/v1alpha1
 kind: Certificate
 metadata:
-  name: whoareyou-service-crt
+  name: node-example-service-crt
 spec:
-  secretName: whoareyou-service-crt
+  secretName: node-example-service-crt
   dnsNames:
-  - whoareyou.k8s.theykk.net
+  - node-example.{{HOST}}
   acme:
     config:
     - http01:
         ingressClass: traefik
       domains:
-      - whoareyou.k8s.theykk.net
+      - node-example.{{HOST}}
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer

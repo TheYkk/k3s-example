@@ -9,7 +9,7 @@ spec:
     rbac.enabled: "true"
     ssl.enabled: "true"
     dashboard.enabled: "true"
-    dashboard.domain: "dashboard.k8s.theykk.net"
+    dashboard.domain: "dashboard.{{HOST}}"
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -22,10 +22,10 @@ metadata:
 spec:
   tls:
   - hosts:
-    - dashboard.k8s.theykk.net
+    - dashboard.{{HOST}}
     secretName: dashboard-service-crt
   rules:
-  - host: dashboard.k8s.theykk.net
+  - host: dashboard.{{HOST}}
     http:
       paths:
       - path: /
@@ -85,13 +85,13 @@ metadata:
 spec:
   secretName: dashboard-service-crt
   dnsNames:
-  - dashboard.k8s.theykk.net
+  - dashboard.{{HOST}}
   acme:
     config:
     - http01:
         ingressClass: traefik
       domains:
-      - dashboard.k8s.theykk.net
+      - dashboard.{{HOST}}
   issuerRef:
     name: letsencrypt-staging
     kind: ClusterIssuer
