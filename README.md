@@ -14,31 +14,34 @@ kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.8.0/cert-manager.yaml
 
 ```
-
+## Setup Env HOST
+```bash
+export HOST="domain.com"
+```
 ## Setup letsencrypt Issuer
 ```bash
-kubectl apply -f clus.yaml
+kubectl apply -f templates/clus.yaml
 ```
 ## Setup Traefik
 ```bash
-kubectl apply -f traefik.yaml
+./deploy-traefik.sh
 ```
 ## Setup Example app
 ```bash
-kubectl apply -f kubia.yaml
+./deploy-kubia.sh
 ```
 ## Setup Example node app
 ```bash
-kubectl apply -f node-example.yaml
+./deploy-node-example.sh
 ```
 ## Setup Kubernetes dashboard
 ```bash
-kubectl apply -f dash.yaml
+./deploy-dash.sh
 ```
 ## Setup DroneCi [Docs](https://docs.drone.io/installation/github/kubernetes/)
 
 ```bash
-kubectl apply -f drone.yaml
+./deploy-drone.sh
 ```
 ## Create token for dashboard
 ```bash
