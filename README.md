@@ -2,6 +2,9 @@
 
 ## Setup k3s
 [k3s](https://k3s.io/)
+```bash
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server  --no-deploy traefik" sh -
+```
 ## Install Cert manager
 
 [Cert Manager](https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html)
