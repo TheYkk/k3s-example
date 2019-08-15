@@ -3,7 +3,7 @@
 ## Setup k3s
 [k3s](https://k3s.io/)
 ```bash
-curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="server  --no-deploy traefik" sh -
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-deploy traefik --tls-san='IPADDR' "  sh -
 ```
 ## Install Cert manager
 
@@ -14,7 +14,7 @@ kubectl create namespace cert-manager
 
 kubectl label namespace cert-manager certmanager.k8s.io/disable-validation=true
 
-kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.8.0/cert-manager.yaml
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.9.1/cert-manager.yaml
 
 ```
 ## Setup Env HOST
