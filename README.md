@@ -5,6 +5,18 @@
 ```bash
 curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-deploy traefik --tls-san='IPADDR' "  sh -
 ```
+
+## Alias
+```bash
+alias k="kubectl"
+alias kd="kubectl delete -f"
+alias ka="kubectl apply -f"
+alias kan="kubectl -A"
+alias kg="kubectl  get all -A"
+alias kp="kubectl proxy --address 0.0.0.0 --accept-hosts '.*'"
+alias kca='f(){ kubectl "$@" -A -o wide;  unset -f f; }; f'
+
+```
 ## Install Cert manager
 
 [Cert Manager](https://docs.cert-manager.io/en/latest/getting-started/install/kubernetes.html)
