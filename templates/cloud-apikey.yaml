@@ -1,0 +1,9 @@
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: clf-api-key
+  namespace: cert-manager
+type: Opaque
+data:
+  api-key: {{CL_API}}

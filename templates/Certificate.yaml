@@ -1,0 +1,23 @@
+---
+apiVersion: certmanager.k8s.io/v1alpha1
+kind: Certificate
+metadata:
+  name: {{DOMAIN_NICE}}-prod
+  namespace: cert-manager
+spec:
+  secretName: {{DOMAIN_NICE}}-tls-prod
+  issuerRef:
+    name: lets-enc-prod
+    kind: ClusterIssuer
+  commonName: '*.{{DOMAIN_NAME}}'
+  dnsNames:
+  - {{DOMAIN_NAME}}
+  - '*.{{DOMAIN_NAME}}'
+  acme:
+    config:
+    - dns01:
+        provider: cf-dns-prod
+      domains:
+      - '{{DOMAIN_NAME}}'
+      - '*.{{DOMAIN_NAME}}'
+

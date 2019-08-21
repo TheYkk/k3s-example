@@ -9,7 +9,7 @@ spec:
     rbac.enabled: "true"
     ssl.enabled: "true"
     dashboard.enabled: "true"
-    dashboard.domain: "dashboard.{{HOST}}"
+    dashboard.domain: "dashboard.{{DOMAIN_NAME}}"
 ---
 apiVersion: extensions/v1beta1
 kind: Ingress
@@ -17,15 +17,13 @@ metadata:
   name: dashboard-ingress
   namespace: kube-system
   annotations:
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
     kubernetes.io/ingress.class: traefik
+    traefik.ingress.kubernetes.io/pass-tls-cert: "true"
 spec:
   tls:
-  - hosts:
-    - dashboard.{{HOST}}
-    secretName: dashboard-service-crt
+  - secretName: {{DOMAIN_NICE}}-tls-prod
   rules:
-  - host: dashboard.{{HOST}}
+  - host: dashboard.{{DOMAIN_NAME}}
     http:
       paths:
       - path: /
@@ -43,6 +41,7 @@ data:
     defaultEntryPoints = ["http","https"]
     debug = false
     logLevel = "INFO"
+    InsecureSkipVerify = true
     #Config to redirect http to https
     [entryPoints]
       [entryPoints.http]
@@ -54,12 +53,16 @@ data:
         address = ":443"
         compress = true
         [entryPoints.https.tls]
+          [[entryPoints.https.tls.certificates]]
+          CertFile = "/ssl/tls.crt"
+          KeyFile = "/ssl/tls.key"
     [api]
       [api.statistics]
         recentErrors = 10
     [kubernetes]
       # Only create ingresses where the object has traffic-type: external label
       labelselector = "traffic-type=external"
+      enablepasstlscert = true
     [metrics]
       [metrics.prometheus]
       buckets=[0.1,0.3,1.2,5.0]
@@ -76,22 +79,5 @@ data:
       OnHostRule = true
       #caServer = "https://acme-v02.api.letsencrypt.org/directory"
       [acme.httpChallenge]
-        entryPoint="http"
----        
-apiVersion: certmanager.k8s.io/v1alpha1
-kind: Certificate
-metadata:
-  name: dashboard-service-crt
-spec:
-  secretName: dashboard-service-crt
-  dnsNames:
-  - dashboard.{{HOST}}
-  acme:
-    config:
-    - http01:
-        ingressClass: traefik
-      domains:
-      - dashboard.{{HOST}}
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer
+        entryPoint="dns01"
+
