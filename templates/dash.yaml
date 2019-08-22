@@ -170,16 +170,15 @@ metadata:
   namespace: kube-system
   annotations:
     kubernetes.io/tls-acme: "true"
-    kubernetes.io/ingress.class: traefik
-    certmanager.k8s.io/cluster-issuer: letsencrypt-prod
-    traefik.ingress.kubernetes.io/redirect-entry-point: https
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/ssl-redirect: "true" 
 spec:
   tls:
   - hosts:
-    - kubernetes.{{HOST}}
-    secretName: kubernetes-dashboard-service-cert      
+    - {{DOMAIN_NAME}}
+    secretName: {{DOMAIN_NICE}}-tls-prod     
   rules:
-  - host: kubernetes.{{HOST}}
+  - host: kubernetes.{{DOMAIN_NAME}}
     http:
       paths:
       - path: /
@@ -187,23 +186,3 @@ spec:
           serviceName: kubernetes-dashboard
           servicePort: http
 
---- 
-# ------------------- Dashboard Certificate ------------------- #   
-
-apiVersion: certmanager.k8s.io/v1alpha1
-kind: Certificate
-metadata:
-  name: kubernetes-dashboard-stg
-spec:
-  secretName: kubernetes-dashboard-service-cert
-  dnsNames:
-  - kubernetes.{{HOST}}
-  acme:
-    config:
-    - http01:
-        ingressClass: traefik
-      domains:
-      - kubernetes.{{HOST}}
-  issuerRef:
-    name: letsencrypt-prod
-    kind: ClusterIssuer

@@ -68,10 +68,20 @@ kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v0.9
 ./deploy-cert.sh
 ```
 
-## Setup Traefik
+## Init HELM
+
+[HELM](https://helm.sh/docs/install/)
 
 ```bash
-./deploy-traefik.sh
+curl -L https://git.io/get_helm.sh | bash
+
+helm init --service-account tiller --history-max 200
+```
+
+## Setup Nginx
+
+```bash
+helm install stable/nginx-ingress
 ```
 
 ## Setup Example app
