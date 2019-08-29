@@ -34,7 +34,7 @@ alias kca='f(){ kubectl "$@" -A -o wide;  unset -f f; }; f'
 [k3s](https://k3s.io/)
 
 ```bash
-curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-deploy traefik --tls-san=$IP "  sh -
+curl -sfL https://get.k3s.io | INSTALL_K3S_EXEC="--no-deploy traefik --tls-san $IP "  sh -
 ```
 
 ## Install Cert manager
