@@ -14,6 +14,7 @@ export DOMAIN_NAME="theykk.net" #change
 export MAIL="yusufkaan142@gmail.com" #change
 export DOMAIN_NICE=$(echo $DOMAIN_NAME | tr . -)
 export IP="IPADDR" #change
+export IP=$(dig TXT +short o-o.myaddr.l.google.com @ns1.google.com | awk -F'"' '{ print $2}')
 ```
 
 ## Alias
